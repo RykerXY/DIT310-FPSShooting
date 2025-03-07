@@ -30,7 +30,11 @@ public class Gun : MonoBehaviour
         muzzleFlash.Play();
         gunAnimator.SetTrigger("Shoot");
         audioSource.PlayOneShot(FireSound);
-        
+        Hit();
+    }
+    
+    void Hit()
+    {
         RaycastHit hit;
         if (Physics.Raycast(firePoint.position, firePoint.forward, out hit, range, hitLayers))
         {
