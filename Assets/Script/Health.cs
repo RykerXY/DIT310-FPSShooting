@@ -11,9 +11,12 @@ public class PlayerHealth : MonoBehaviour
     public Image health4;
     public Image health5;
 
+    private bool isInvincible = false;
+    private float invincibleTime = 1f;
+    private float invincibleTimer = 0f;
+
     void Update()
     {
-        // Disable health image based on health value
         if (health == 4)
         {
             health5.enabled = false;
@@ -34,14 +37,31 @@ public class PlayerHealth : MonoBehaviour
         {
             health1.enabled = false;
         }
+
+        if (isInvincible)
+        {
+            invincibleTimer -= Time.deltaTime;
+            if (invincibleTimer <= 0f)
+            {
+                isInvincible = false;
+            }
+        }
     }
-    
+
     public void TakeDamage(int damage)
     {
+        if (isInvincible) return;
+
+        Debug.Log("Player Health: " + health);
         health -= damage;
         if (health <= 0)
         {
             Die();
+        }
+        else
+        {
+            isInvincible = true;
+            invincibleTimer = invincibleTime;
         }
     }
 
@@ -49,5 +69,5 @@ public class PlayerHealth : MonoBehaviour
     {
         gameoverUI.SetActive(true);
         Destroy(gameObject);
-    }   
+    }
 }
