@@ -7,6 +7,7 @@ public class CountdownTimer : MonoBehaviour
     public float startTime = 60f;
     public float delayBeforeStart = 3f; 
     public TextMeshProUGUI timerText; 
+    public GameObject gameoverUI;
 
     private float currentTime;
     private bool isCounting = false;
@@ -35,6 +36,10 @@ public class CountdownTimer : MonoBehaviour
         {
             currentTime -= Time.deltaTime;
             timerText.text = FormatTime(currentTime);
+        }
+        if (currentTime <= 0)
+        {
+            gameoverUI.SetActive(true);
         }
     }
 

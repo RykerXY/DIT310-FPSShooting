@@ -4,12 +4,18 @@ public class CheckNest : MonoBehaviour
 {
     public bool isWin = false;
     public GameObject winUI;
+    public GameObject Spawner;
+    public GameObject Gun;
+    int enemyCount;
 
     void Update()
     {
+        enemyCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
         if (Check())
         {
-            isWin = true;
+            Destroy(Spawner);
+            
+            if(enemyCount == 0) isWin = true;
         }
         OnGUI();
     }
@@ -28,6 +34,7 @@ public class CheckNest : MonoBehaviour
     {
         if (isWin)
         {
+            Destroy(Gun);
             winUI.SetActive(true);
         }
     }

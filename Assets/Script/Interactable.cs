@@ -7,6 +7,8 @@ public class Interactable : MonoBehaviour
     public TextMeshProUGUI interactionText;
     public float interactionDistance = 2.0f;
     private IInteractable currentInteractable;
+    public AudioSource audioSource;
+    public AudioClip CleanSound;
 
     public void Update()
     {
@@ -37,6 +39,7 @@ public class Interactable : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E) && currentInteractable != null)
         {
+            audioSource.PlayOneShot(CleanSound);
             currentInteractable.Interact();
         }
     }

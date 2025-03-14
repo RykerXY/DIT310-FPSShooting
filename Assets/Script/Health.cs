@@ -5,6 +5,8 @@ public class PlayerHealth : MonoBehaviour
 {
     public int health = 5;
     public GameObject gameoverUI;
+    public GameObject gun;
+    public Collider HealArea;
     public Image health1;
     public Image health2;
     public Image health3;
@@ -68,6 +70,19 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         gameoverUI.SetActive(true);
-        Destroy(gameObject);
+        Destroy(gun);
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        if (other == HealArea)
+        {
+            health = 5;
+            health1.enabled = true;
+            health2.enabled = true;
+            health3.enabled = true;
+            health4.enabled = true;
+            health5.enabled = true;
+        }
     }
 }

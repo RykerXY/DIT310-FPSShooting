@@ -16,33 +16,41 @@ public class NavmeshController : MonoBehaviour
 
     void Start()
     {
-        target = GameObject.FindGameObjectWithTag("Player").transform;
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            target = player.transform;
+        }
+        
         agent = GetComponent<NavMeshAgent>();
-        InvokeRepeating("Roam", 0f, roamInterval);
+        InvokeRepeating(nameof(Roam), 0f, roamInterval);
     }
 
     void Update()
     {
-        if(target == null) Destroy(this);
-        if(target != null) distanceToPlayer = Vector3.Distance(transform.position, target.position);
-
-        if (target != null && !isStopped)
+        if (target == null)
         {
-            if (distanceToPlayer <= followDistance)
-            {
-                agent.SetDestination(target.position);
-                PlayWalkingSound();
-            }
+            Destroy(gameObject);
+            return;
+        }
+
+        distanceToPlayer = Vector3.Distance(transform.position, target.position);
+
+        if (!isStopped && distanceToPlayer <= followDistance)
+        {
+            agent.SetDestination(target.position);
+            PlayWalkingSound();
         }
     }
 
     void Roam()
     {
+        if (target == null) return;
+
         if (Vector3.Distance(transform.position, target.position) > followDistance)
         {
             Vector3 randomDirection = Random.insideUnitSphere * roamRadius;
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(transform.position + randomDirection, out hit, roamRadius, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(transform.position + randomDirection, out NavMeshHit hit, roamRadius, NavMesh.AllAreas))
             {
                 agent.SetDestination(hit.position);
                 PlayWalkingSound();
@@ -62,13 +70,14 @@ public class NavmeshController : MonoBehaviour
     {
         isStopped = true;
         agent.isStopped = true;
-        Vector3 reverseDirection = -transform.forward;
-        agent.velocity = reverseDirection * agent.speed;
-        Invoke("ResumeAI", 2f);
+        agent.velocity = -transform.forward * agent.speed;
+        Invoke(nameof(ResumeAI), 2f);
     }
 
     void ResumeAI()
     {
+        if (target == null) return;
+
         isStopped = false;
         agent.isStopped = false;
         agent.velocity = Vector3.zero;
@@ -77,7 +86,7 @@ public class NavmeshController : MonoBehaviour
 
     void PlayWalkingSound()
     {
-        if (!audioSource.isPlaying & playable)
+        if (playable && audioSource != null && !audioSource.isPlaying)
         {
             audioSource.clip = walkingSound;
             audioSource.Play();

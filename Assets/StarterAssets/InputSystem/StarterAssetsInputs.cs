@@ -20,6 +20,10 @@ namespace StarterAssets
 		public bool cursorLocked = true;
 		public bool cursorInputForLook = true;
 
+		[Header("Game Over UI")]
+		public GameObject gameOverUI; // เพิ่มตัวแปรเก็บ UI Game Over
+		public GameObject winUI; // เพิ่มตัวแปรเก็บ UI Win
+
 #if ENABLE_INPUT_SYSTEM
 		public void OnMove(InputValue value)
 		{
@@ -28,7 +32,7 @@ namespace StarterAssets
 
 		public void OnLook(InputValue value)
 		{
-			if(cursorInputForLook)
+			if (cursorInputForLook)
 			{
 				LookInput(value.Get<Vector2>());
 			}
@@ -44,7 +48,6 @@ namespace StarterAssets
 			SprintInput(value.isPressed);
 		}
 #endif
-
 
 		public void MoveInput(Vector2 newMoveDirection)
 		{
@@ -71,10 +74,23 @@ namespace StarterAssets
 			SetCursorState(cursorLocked);
 		}
 
+		private void Update()
+		{
+			// ถ้า gameOverUI เปิดใช้งาน -> ปลดล็อคเมาส์
+			if (gameOverUI != null && gameOverUI.activeSelf || winUI != null && winUI.activeSelf)
+			{
+				SetCursorState(false);
+			}
+			else
+			{
+				SetCursorState(cursorLocked);
+			}
+		}
+
 		private void SetCursorState(bool newState)
 		{
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+			Cursor.visible = !newState;
 		}
 	}
-	
 }
